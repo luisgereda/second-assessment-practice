@@ -3,7 +3,7 @@ const { Router } = require("express");
 const { toJWT } = require("../auth/jwt");
 const authMiddleware = require("../auth/middleware");
 const User = require("../models/").user;
-const Space = require("../models/").Space;
+const Space = require("../models/").space;
 const { SALT_ROUNDS } = require("../config/constants");
 
 const router = new Router();
@@ -49,23 +49,21 @@ router.post("/signup", async (req, res) => {
     });
     const newSpace = await Space.create({
       title: `${name}'s Space`,
-      decription: null,
       backgroundColor: "#ffffff",
       color: "#000000",
-      usedId: newUser.id,
+      userId: newUser.id,
     });
+    console;
 
     delete newUser.dataValues["password"]; // don't send back the password hash
 
     const token = toJWT({ userId: newUser.id });
 
-    res
-      .status(201)
-      .json({
-        token,
-        ...newUser.dataValues,
-        space: { ...newSpace.dataValues, stories: [] },
-      });
+    res.status(201).json({
+      token,
+      ...newUser.dataValues,
+      space: { ...newSpace.dataValues, stories: [] },
+    });
   } catch (error) {
     if (error.name === "SequelizeUniqueConstraintError") {
       return res

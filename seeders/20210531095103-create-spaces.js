@@ -1,7 +1,5 @@
 "use strict";
 
-const { DATE } = require("sequelize");
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert("spaces", [
