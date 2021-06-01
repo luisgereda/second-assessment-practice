@@ -17,7 +17,6 @@ module.exports = {
       },
       backgroundColor: {
         type: Sequelize.STRING,
-        defaultValue: "#ffffff",
       },
       color: {
         type: Sequelize.STRING,

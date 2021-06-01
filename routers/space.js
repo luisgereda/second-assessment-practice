@@ -5,6 +5,19 @@ const Story = require("../models").story;
 
 const router = new Router();
 
+router.patch("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { title, description, backgroundColor, color } = req.body;
+    const space = await Space.findByPk(id);
+
+    await space.update({ backgroundColor, color, description, title });
+    return res.status(200).send({ space });
+  } catch (e) {
+    console.log(e.message);
+  }
+});
+
 router.post("/:id/stories", authMiddleWare, async (req, res, next) => {
   try {
     const { name, content, image } = req.body;
@@ -30,10 +43,24 @@ router.post("/:id/stories", authMiddleWare, async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const allStories = await Space.findAll();
-    res.json(allStories);
+    const allSpaces = await Space.findAll();
+    res.json(allSpaces);
   } catch (e) {
     next(e);
+  }
+});
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const space = await Space.findByPk(parseInt(id), {
+      include: [Story],
+      order: [[Story, "createdAt", "DESC"]],
+    });
+    res.status(200).send({ message: "ok", space });
+  } catch (e) {
+    console.log(e.message);
+    next();
   }
 });
 
